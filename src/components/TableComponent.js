@@ -1,11 +1,12 @@
+import { useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-const people = [
-    { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-    // More people...
-  ]
   
  function TableComponent({t,children}) {
+  useEffect(() => {
+    console.log(children);
+    return () => {};
+  }, [children]);
     return (
       <div className="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
         <div className="sm:flex sm:items-center">
@@ -20,7 +21,7 @@ const people = [
           <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <Link
               key={"Add"}
-              to={'/department/add'}
+              to={"/department/add"}
               onClick={() => ({})}
               className="block px-3 py-2 text-sm font-semibold text-center text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
@@ -44,19 +45,7 @@ const people = [
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Title
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Email
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Role
+                      Description
                     </th>
                     <th
                       scope="col"
@@ -67,19 +56,13 @@ const people = [
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {people.map((person) => (
-                    <tr key={person.email}>
+                  {children.map((person) => (
+                    <tr key={person.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0">
                         {person.name}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person.title}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person.email}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person.role}
+                        {person.description}
                       </td>
                       <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-0">
                         <a

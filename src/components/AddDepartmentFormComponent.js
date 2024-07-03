@@ -7,8 +7,6 @@ import departmentService from "../services/departmentService";
   const descriptionRef = useRef();
   const handleSubmit=async (evt) => {
     evt.preventDefault();
-    const token = sessionStorage.getItem("token");
-    const headers = {"Content-Type": "application/json", 'Authorization': 'Bearer '+token };
     try {
       const data = JSON.stringify({
         name: nameRef.current.value,

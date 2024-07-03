@@ -1,8 +1,41 @@
+import { useRef, useState } from "react";
 import { withTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import employeeService from "../services/employeeService";
 
  function AddEmployeeFormComponent({ t }) {
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
+  const emailRef = useRef();
+  const phoneRef = useRef();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (evt) => {
+    evt.preventDefault();
+    try {
+      const data = JSON.stringify({
+        firstName: firstNameRef.current.value,
+        lastName: lastNameRef.current.value,
+        email: emailRef.current.value,
+        phone: phoneRef.current.value,
+      });
+      employeeService
+        .addEmployee(data)
+        .then((res) => {
+          navigate("/employee");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
    return (
-     <form className="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+     <form
+       onSubmit={handleSubmit}
+       className="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8"
+     >
        <div className="space-y-12 sm:space-y-16">
          <div>
            <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -25,6 +58,7 @@ import { withTranslation } from "react-i18next";
                    type="text"
                    name="first-name"
                    id="first-name"
+                   ref={firstNameRef}
                    autoComplete="given-name"
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
@@ -43,6 +77,7 @@ import { withTranslation } from "react-i18next";
                    type="text"
                    name="last-name"
                    id="last-name"
+                   ref={lastNameRef}
                    autoComplete="last-name"
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
@@ -60,6 +95,7 @@ import { withTranslation } from "react-i18next";
                    type="text"
                    name="email"
                    id="email"
+                   ref={emailRef}
                    autoComplete="email"
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
@@ -76,9 +112,10 @@ import { withTranslation } from "react-i18next";
                  <input
                    type="phone"
                    name="phone"
+                   ref={phoneRef}
                    id="phone"
                    autoComplete="phone"
-                   className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                   className="block w-full px-2 max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
                </div>
              </div>

@@ -1,8 +1,45 @@
+import { useEffect, useRef, useState } from "react";
 import { withTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import employeeService from "../services/employeeService";
+import projectService from "../services/projectService";
 
  function AddProjectFormComponent({ t }) {
+  const [leadersArray, setLeadersArray] = useState([]);
+  const titleRef = useRef();
+  const leaderIdRef = useRef();
+  const budgetSumRef = useRef();
+  const spentSumRef = useRef();
+  const residualRef = useRef();
+  const navigate = useNavigate();
+  const handleSubmit = async () => {
+    const data = {
+      name: titleRef.current.value,
+      responsibleLeaderId: leaderIdRef.current.value,
+      budgetSum: budgetSumRef.current.value,
+      spentSum: spentSumRef.current.value,
+      residualSum: residualRef.current.value,
+    };
+    projectService.addProject(data).then((res)=>{
+        navigate("/project");
+    }).catch(err=>{
+      console.log(err);
+    })
+  };
+  useEffect(() => {
+    employeeService.getEmployee().then((res) => {
+      setLeadersArray(res.data);
+    });
+    return () => {};
+  }, []);
+  useEffect(() => {
+    return () => {};
+  }, [leadersArray]);
    return (
-     <form className="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+     <form
+       onSubmit={handleSubmit}
+       className="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8"
+     >
        <div className="space-y-12 sm:space-y-16">
          <div>
            <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -15,17 +52,18 @@ import { withTranslation } from "react-i18next";
            <div className="pb-12 mt-10 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                <label
-                 htmlFor="first-name"
+                 htmlFor="title"
                  className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                >
-                 Name
+                 Title
                </label>
                <div className="mt-2 sm:col-span-2 sm:mt-0">
                  <input
                    type="text"
-                   name="first-name"
-                   id="first-name"
-                   autoComplete="given-name"
+                   name="title"
+                   id="title"
+                   autoComplete="title"
+                   ref={titleRef}
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
                </div>
@@ -33,28 +71,31 @@ import { withTranslation } from "react-i18next";
 
              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                <label
-                 htmlFor="country"
+                 htmlFor="leader"
                  className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                >
                  Responsible leader
                </label>
                <div className="mt-2 sm:col-span-2 sm:mt-0">
                  <select
-                   id="country"
-                   name="country"
-                   autoComplete="country-name"
+                   id="leader"
+                   name="leader"
+                   autoComplete="leader"
+                   ref={leaderIdRef}
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  >
-                   <option>United States</option>
-                   <option>Canada</option>
-                   <option>Mexico</option>
+                   {leadersArray.map((item) => (
+                     <option key={item.id} value={item.id}>
+                       {item.firstName} {item.lastName}
+                     </option>
+                   ))}
                  </select>
                </div>
              </div>
 
              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                <label
-                 htmlFor="first-name"
+                 htmlFor="budget-sum"
                  className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                >
                  Budget sum
@@ -62,16 +103,17 @@ import { withTranslation } from "react-i18next";
                <div className="mt-2 sm:col-span-2 sm:mt-0">
                  <input
                    type="number"
-                   name="first-name"
-                   id="first-name"
-                   autoComplete="given-name"
+                   name="budget-sum"
+                   id="budget-sum"
+                   autoComplete="budget-sum"
+                   ref={budgetSumRef}
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
                </div>
              </div>
              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                <label
-                 htmlFor="first-name"
+                 htmlFor="spent-sum"
                  className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                >
                  Spent sum
@@ -79,16 +121,17 @@ import { withTranslation } from "react-i18next";
                <div className="mt-2 sm:col-span-2 sm:mt-0">
                  <input
                    type="number"
-                   name="first-name"
-                   id="first-name"
-                   autoComplete="given-name"
+                   name="spent-sum"
+                   id="spent-sum"
+                   ref={spentSumRef}
+                   autoComplete="spent-sum"
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
                </div>
              </div>
              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                <label
-                 htmlFor="first-name"
+                 htmlFor="residual-sum"
                  className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
                >
                  Residual sum
@@ -96,9 +139,10 @@ import { withTranslation } from "react-i18next";
                <div className="mt-2 sm:col-span-2 sm:mt-0">
                  <input
                    type="number"
-                   name="first-name"
-                   id="first-name"
-                   autoComplete="given-name"
+                   name="residual-sum"
+                   id="residual-sum"
+                   autoComplete="residual-sum"
+                   ref={residualRef}
                    className="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                  />
                </div>
