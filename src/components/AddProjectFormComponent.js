@@ -12,7 +12,8 @@ import projectService from "../services/projectService";
   const spentSumRef = useRef();
   const residualRef = useRef();
   const navigate = useNavigate();
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const data = {
       name: titleRef.current.value,
       responsibleLeaderId: leaderIdRef.current.value,
